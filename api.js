@@ -28,13 +28,19 @@ exports.authToken = function(cb){
 	},
 
 	function (error, response, body) {
-     
-      if(response.statusCode == 200){
-        cb(JSON.parse(body)['access_token'])
-      } else {
-        console.log('error: '+ response.statusCode)
-        cb(false)
-      }
+
+		if (!response){
+			console.log("Error: Make sure you set the correct base path to the API.")
+			process.exit()
+		}
+
+
+		if(response.statusCode == 200){
+			cb(JSON.parse(body)['access_token'])
+		} else {
+			console.log('error: '+ response.statusCode)
+			cb(false)
+		}
     })
 
 
