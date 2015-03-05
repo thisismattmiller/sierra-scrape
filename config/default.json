@@ -1,0 +1,9 @@
+{
+  "API": {
+  	"key": "",
+  	"secret" : "",
+  	"base" : "https://lib.example.edu/iii/sierra‑api/v1/",
+  	"perRequest" : 100,
+  	"IdStart" : 0
+  }
+}
