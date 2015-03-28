@@ -13,11 +13,9 @@ exports.convert = function(){
 
 	var files = fs.readdirSync(inputDir)
 
-	//var wstream = fs.createWriteStream(outputDir, { flags: 'w'});
 
 	for (var x in files){
 
-		//if (x > 100) break
 
 		var file = files[x]
 
@@ -45,8 +43,6 @@ exports.convert = function(){
 
 					var aline = JSON.stringify(bib)
 
-
-					//wstream.write(aline + '\n')
 
 					fs.appendFileSync(outputDir, aline + "\n");
 
