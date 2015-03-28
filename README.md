@@ -32,3 +32,17 @@ node scrape.js
 
 It will make a directory called data and will be filled with json files.
 
+Once it is done (likely will take many days if you have millions of records) you can run:
+```
+node dump.js
+```
+And combine all the files into a single path, config the paths in config/default.json
+```json
+{
+  "Dump":{
+  	"in" : "./data/",
+  	"out" : "/path/to/output/single/file/catalog.json"
+  }  
+}
+```
+
