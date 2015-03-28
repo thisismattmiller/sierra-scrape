@@ -19,6 +19,7 @@ api.authToken(function(keyValue){
 		setInterval(function(){
 			api.authToken(function(keyValue){
 				key = keyValue;
+				console.log("\nnew key:",key)
 			})
 		},3000000)
 
@@ -31,10 +32,10 @@ api.authToken(function(keyValue){
 
 
 
-
+		//lets define a function we can pass as the callback of the api response, so when the data is ready
 		var next = function(data){
 
-			//process the results
+			
 
 			//find the last id to send back to the server + 1
 			var lastId = parseInt(data['entries'][data['entries'].length-1]['id'])

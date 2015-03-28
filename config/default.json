@@ -5,5 +5,9 @@
   	"base" : "https://lib.example.edu/iii/sierra‑api/v1/",
   	"perRequest" : 100,
   	"IdStart" : 0
-  }
+  },
+  "Dump":{
+  	"in" : "./data/",
+  	"out" : "/path/to/output/single/file/catalog.json"
+  }  
 }
