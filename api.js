@@ -38,6 +38,7 @@ exports.authToken = function(cb){
 		if(response.statusCode == 200){
 			cb(JSON.parse(body)['access_token'])
 		} else {
+			console.log(response)
 			console.log('error: '+ response.statusCode)
 			cb(false)
 		}
@@ -47,10 +48,25 @@ exports.authToken = function(cb){
 
 }
 
-exports.downloadData = function(id,token,cb){
+exports.downloadData = function(id,token,type,cb){
+
+
+	if (typeof type == 'function'){
+		//overwrite the type with cb since no type was provided
+		var cb = type
+		var type = 'bibs/?'
+
+	}else if (type == 'bibs'){
+		var type = 'bibs/?'	
+
+	}else if (type == 'items'){
+		var type = 'items/?'
+	}
 
 	//build the URL we are only intrested in non-deleted records, all possible fields from this endpoint
-	var url = config['API']['base'] + "bibs/?" + "id=[" + id + ",]" + "&deleted=false"  + "&fields=default,fixedFields,varFields" + "&limit=" + config['API']['perRequest']
+	var url = config['API']['base'] + type + "id=[" + id + ",]" + "&deleted=false"  + "&fields=default,fixedFields,varFields" + "&limit=" + config['API']['perRequest']
+
+
 
 	//use the bearer auth token
 	request.get(url , {
@@ -60,10 +76,10 @@ exports.downloadData = function(id,token,cb){
 	},
 
 	function (error, response, body) {
-	     
+
       if(response.statusCode == 200){
       	//parse and send to the callback funtion
-        var data = JSON.parse(body)        
+        var data = JSON.parse(body)
         cb(data);
       } else {
         console.log('error: '+ response.statusCode)
@@ -86,9 +102,9 @@ exports.saveData = function(data){
 		fs.writeFile("./data/" + filename, JSON.stringify(data), function(err) {
 			if(err) {
 				console.log("Error: could not write file")
-				console.log(err)			
+				console.log(err)
 			}
-		}); 
+		});
 
 
 }

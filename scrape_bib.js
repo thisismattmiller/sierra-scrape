@@ -12,7 +12,7 @@ api.init()
 api.authToken(function(keyValue){
 
 	if (keyValue){
-		
+
 		key = keyValue;
 
 		//if that worked then make sure our key stays up to date every 50 min
@@ -35,7 +35,7 @@ api.authToken(function(keyValue){
 		//lets define a function we can pass as the callback of the api response, so when the data is ready
 		var next = function(data){
 
-			
+
 
 			//find the last id to send back to the server + 1
 			var lastId = parseInt(data['entries'][data['entries'].length-1]['id'])
@@ -58,7 +58,7 @@ api.authToken(function(keyValue){
 
 			process.stdout.write("Status: " + totalRecords.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " total records. " + totalApiRequests.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " total requests. " + Math.floor(avg).toString() + " requests per min. " + "Last Id: " + lastId + "\r");
 
-			//recursive requests 
+			//recursive requests
 			api.downloadData(String(lastId+1),key,next);
 
 
