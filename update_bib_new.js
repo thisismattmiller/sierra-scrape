@@ -25,8 +25,7 @@ var log = require('simple-node-logger').createRollingFileLogger( opts );
 log.info('[update_bib] Starting up script')
 
 //check to makesure we are inside our range of operation
-var timeStart = config['API']['timeStart']
-var timeEnd = config['API']['timeEnd']
+var runWindow = config['API']['runWindow']
 var key
 var repeatedId = ""
 var repeatedIdCount = 0
@@ -38,12 +37,12 @@ var exit = function(){
 
 var checkTime = function(){
 	var date = new Date();
-	var current_hour = date.getHours();
+	var currentHour = date.getHours();
 
-	if (current_hour >= timeStart && current_hour <= timeEnd ){
-		return true
-	}else{
+	if (runWindow.indexOf(parseInt(currentHour)) == -1 ){
 		return false
+	}else{
+		return true
 	}
 
 }
@@ -73,6 +72,7 @@ child = exec("ps aux",
 
 
 if (checkTime()){
+
 
 	db.getMetadata(function(err,metadata){
 
@@ -236,7 +236,8 @@ if (checkTime()){
 
 }else{
 
-	log.info('[update_bib] Not in run window: between', timeStart, " and ", timeEnd )
+	log.info('[update_bib] Not in run window: ', runWindow )
+	exit()
 
 
 }
