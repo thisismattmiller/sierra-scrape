@@ -1,3 +1,5 @@
+#!/usr/local/bin/node
+
 var api = require("./api.js")
 var config = require("config")
 var db = require("./db.js")

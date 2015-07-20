@@ -1,3 +1,6 @@
+#!/usr/local/bin/node
+
+
 var config = require("config")
 var db = require("./db.js")
 var exec = require('child_process').exec
@@ -111,11 +114,10 @@ var updateBibRecord = function(){
 
 
 
-
 var records = []
 var sourceFiles = []
 
-glob('./data/bib_*.json', {}, function (er, files) {
+glob(__dirname + '/data/bib_*.json', {}, function (er, files) {
 
 	sourceFiles = files
 

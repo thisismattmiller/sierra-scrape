@@ -141,9 +141,10 @@ exports.saveData = function(data,type){
 			type = type + "_"
 		}
 
+
 		filename = data['entries'][data['entries'].length-1]['id'] + ".json"
 
-		fs.writeFile("./data/" + type + filename, JSON.stringify(data), function(err) {
+		fs.writeFile(__dirname + + "/data/" + type + filename, JSON.stringify(data), function(err) {
 			if(err) {
 				console.log("Error: could not write file")
 				console.log(err)
