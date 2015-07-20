@@ -97,6 +97,48 @@ exports.insertBibRecord = function(bib,cb){
 
 
 
+exports.updateItemMetadata = function(date,offset,cb){
+	MongoClient.connect(mongoConnectURL, function(err, db) {
+		var collection = db.collection('meta')
+		collection.update({ name : "metadata" }
+			, { $set: { itemLastUpdatedDate : date, itemLastUpdatedOffset : offset } }, function(err, result) {
+			if (cb) cb(result);
+		})
+	})
+}
+
+
+
+exports.updateItemRecord = function(item,cb){
+	MongoClient.connect(mongoConnectURL, function(err, db) {
+		var collection = db.collection('item')
+		collection.update({ _id : item.id }
+			, { $set: item }, function(err, result) {
+			db.close()
+			if (cb) cb(err,result);
+		})
+
+	})
+
+}
+
+
+exports.insertItemRecord = function(item,cb){
+	MongoClient.connect(mongoConnectURL, function(err, db) {
+		var collection = db.collection('item')
+		collection.insert(item, function(err, result) {
+			if (cb) cb(err,result);
+			db.close()
+		})
+	})
+}
+
+
+
+
+
+
+
 
 
 

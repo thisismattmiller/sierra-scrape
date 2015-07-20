@@ -71,7 +71,14 @@ exports.downloadRecent = function(timeStart,timeEnd,token,type,field,offset,cb){
       	//parse and send to the callback funtion
         var data = JSON.parse(body)
         cb(data);
+
+      }else if (response.statusCode == 404){
+
+      	cb({"entries": [],"start": 0,"total": 0});
+      
       } else {
+
+
         console.log('error: '+ response.statusCode)
         console.log("URL:", url)
         console.log(body)
@@ -141,8 +148,12 @@ exports.saveData = function(data,type){
 			type = type + "_"
 		}
 
-
-		filename = data['entries'][data['entries'].length-1]['id'] + ".json"
+		if (data['entries'][data['entries'].length-1]){
+			filename = data['entries'][data['entries'].length-1]['id'] + ".json"
+		}else{
+			filename = Math.floor(Date.now() / 1000) + ".json"
+		}
+		
 
 		fs.writeFile(__dirname + "/data/" + type + filename, JSON.stringify(data), function(err) {
 			if(err) {
