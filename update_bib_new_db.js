@@ -156,7 +156,7 @@ glob('./data/bib_*.json', {}, function (er, files) {
 		}
 
 
-		log.info("[update_bib_db] Will update/insert ", records, " records.")
+		log.info("[update_bib_db] Will update/insert ", records.length, " records.")
 
 		//start the first one
 		updateBibRecord()
