@@ -38,6 +38,17 @@ child = exec("ps aux",
 var updateBibRecord = function(){
 
 	if (!records[0]) {
+
+		//drop the old files
+		for (var x in sourceFiles){
+
+			
+			log.info('[update_bib_db] Deleting: ', sourceFiles[x])
+			fs.unlinkSync(sourceFiles[x]);
+
+		}
+
+
 		exit()
 		return
 	}
@@ -102,8 +113,11 @@ var updateBibRecord = function(){
 
 
 var records = []
+var sourceFiles = []
 
 glob('./data/bib_*.json', {}, function (er, files) {
+
+	sourceFiles = files
 
 	log.info("[update_bib_db] Going to update records in ", files.length, " files.")
 
