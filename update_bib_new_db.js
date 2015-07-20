@@ -28,7 +28,7 @@ var child;
 
 child = exec("ps aux",
    function (error, stdout, stderr) {
-      if (stdout.split('update_bib_new_db.js').length > 2){
+      if (stdout.split('update_bib_new_db.js').length > 3){
       	console.log("Already running ",stdout.split('update_bib_new_db.js').length)
 		log.info('[update_bib_db] Already running instance count: ', stdout.split('update_bib_new_db.js').length )
 
