@@ -18,14 +18,15 @@ exports.createBaseMetadata = function(datetime){
 			var baseData = {
 
 				name : "metadata",
-				bibLastCreatedDate : datetime,
 				bibLastUpdatedDate : datetime,
-				itemLastCreatedDate : datetime,
-				itemLastUpdatedDate : datetime
+				bibLastUpdatedOffset: 0,
+				itemLastUpdatedDate : datetime,
+				itemLastUpdatedOffset : 0
+
 			}
 
 			collection.insert(baseData, function(err, result) {
-				console.log(result.result)
+
 				db.close()
 			})
 		});
@@ -38,25 +39,70 @@ exports.createBaseMetadata = function(datetime){
 
 exports.getMetadata = function(cb){
 
+	MongoClient.connect(mongoConnectURL, function(err, db) {
+		var collection = db.collection('meta')		
+		collection.find({name : "metadata"}).toArray(function(err, docs) {
+			db.close()
+			cb(err,docs)
+		});
+	});	
+}
 
+
+
+
+
+exports.updateBibMetadata = function(date,offset,cb){
 	MongoClient.connect(mongoConnectURL, function(err, db) {
 		var collection = db.collection('meta')
-		
-		collection.find({name : "metadata"}).toArray(function(err, docs) {
+		collection.update({ name : "metadata" }
+			, { $set: { bibLastUpdatedDate : date, bibLastUpdatedOffset : offset } }, function(err, result) {
+			if (cb) cb(result);
+		})
 
-
-			cb(docs);
-			db.close()
-
-		});
-
-		
-
-
-
-	});	
-
-
+	})
 
 }
+
+
+
+exports.updateBibRecord = function(bib,cb){
+	MongoClient.connect(mongoConnectURL, function(err, db) {
+		var collection = db.collection('bib')
+		collection.update({ _id : bib.id }
+			, { $set: bib }, function(err, result) {
+			db.close()
+			if (cb) cb(err,result);
+		})
+
+	})
+
+}
+
+
+exports.insertBibRecord = function(bib,cb){
+	MongoClient.connect(mongoConnectURL, function(err, db) {
+		var collection = db.collection('bib')
+		collection.insert(bib, function(err, result) {
+			if (cb) cb(err,result);
+			db.close()
+		})
+	})
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

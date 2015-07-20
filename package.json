@@ -3,8 +3,12 @@
   "author": "Matt Miller",
   "dependencies": {
     "config": "1.12.0",
+    "glob": "^5.0.14",
+    "moment": "^2.10.3",
     "mongodb": "^2.0.39",
-    "request": "2.53.0"
+    "ps-node": "0.0.4",
+    "request": "2.53.0",
+    "simple-node-logger": "^0.92.21"
   },
   "description": "",
   "license": "MIT",
