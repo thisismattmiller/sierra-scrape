@@ -130,7 +130,7 @@ if (checkTime()){
 
 						if (data.url){
 
-							log.info('[update_item] ', data.url
+							log.info('[update_item] ', data.url)
 						}
 
 

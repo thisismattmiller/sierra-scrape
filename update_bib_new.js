@@ -126,7 +126,7 @@ if (checkTime()){
 
 						if (data.url){
 
-							log.info('[update_bib] ', data.url
+							log.info('[update_bib] ', data.url)
 						}
 
 
