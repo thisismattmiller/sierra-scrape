@@ -125,6 +125,9 @@ exports.downloadData = function(id,token,type,cb){
       if(response.statusCode == 200){
       	//parse and send to the callback funtion
         var data = JSON.parse(body)
+
+        data.url = url
+        
         cb(data);
       } else {
         console.log('error: '+ response.statusCode)

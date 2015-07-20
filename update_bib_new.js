@@ -124,6 +124,13 @@ if (checkTime()){
 							totalRecords = data.total
 						}
 
+						if (data.url){
+
+							log.info('[update_bib] ', data.url
+						}
+
+
+
 						// //find the last id to send back to the server + 1
 						offset = offset + (data['entries'].length)
 
@@ -225,6 +232,11 @@ if (checkTime()){
 		
 
 	})
+
+
+}else{
+
+	log.info('[update_bib] Not in run window: between', timeStart, " and ", timeEnd )
 
 
 }

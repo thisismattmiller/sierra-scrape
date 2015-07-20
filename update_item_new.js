@@ -86,10 +86,8 @@ if (checkTime()){
 
 			log.info('[update_item] Starting API connection')
 
-			metadata.itemLastUpdatedDate = "2014-06-01"
 
 			var startingMoment = moment(metadata.itemLastUpdatedDate,"YYYY-MM-DD")
-
 			
 
 			console.log("-----------------")
@@ -117,7 +115,6 @@ if (checkTime()){
 					//if there is a letfover offset start up with that one
 					var offset = metadata.itemLastUpdatedOffset
 
-					offset=0
 
 					//lets define a function we can pass as the callback of the api response, so when the data is ready
 					var next = function(data){
@@ -130,6 +127,12 @@ if (checkTime()){
 							totalRecords = data.total
 							console.log("totalRecords:",totalRecords)
 						}
+
+						if (data.url){
+
+							log.info('[update_item] ', data.url
+						}
+
 
 						// //find the last id to send back to the server + 1
 						offset = offset + (data['entries'].length)
@@ -234,6 +237,11 @@ if (checkTime()){
 		
 
 	})
+
+
+}else{
+
+	log.info('[update_item] Not in run window: between', timeStart, " and ", timeEnd )
 
 
 }
