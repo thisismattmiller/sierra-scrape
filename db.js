@@ -134,10 +134,69 @@ exports.insertItemRecord = function(item,cb){
 }
 
 
+exports.returnBib = function(id,cb,db){
+
+
+	//if a db is already active 
+	if (db){
+
+		var collection = db.collection('bib')		
+		collection.find({_id : id}).toArray(function(err, docs) {
+			cb(err,docs)
+		});
+
+	}else{
+
+		MongoClient.connect(mongoConnectURL, function(err, db) {
+			var collection = db.collection('bib')		
+			collection.find({_id : id}).toArray(function(err, docs) {
+				db.close()
+				cb(err,docs)
+			});
+		});	
+
+	}
 
 
 
 
+}
+
+
+exports.allItems = function(cb){
+
+
+
+	MongoClient.connect(mongoConnectURL, function(err, db) {
+		var collection = db.collection('item')
+
+
+		var cursor = collection.find({}).sort({ $natural: -1 });
+		
+		cursor.on('data', function(doc) {
+
+			cursor.pause()
+
+			//send the data to the calling function with the cursor
+
+			cb(doc,cursor,db)
+
+
+		});
+
+
+
+		cursor.once('end', function() {
+			db.close();
+		});
+
+
+
+
+	})
+
+
+}
 
 
 
