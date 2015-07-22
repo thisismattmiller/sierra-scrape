@@ -142,6 +142,8 @@ glob(__dirname + '/data/item_*.json', {}, function (er, files) {
 
 			file = files[file]
 
+			if (records.length > 10000) break
+
 			var content = fs.readFileSync(file);
 
 			content = JSON.parse(content)
