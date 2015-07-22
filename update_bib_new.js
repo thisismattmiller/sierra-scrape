@@ -7,12 +7,7 @@ var moment = require('moment')
 var exec = require('child_process').exec
 
 
-var key = false,
-	apiRequests = 0,
-	totalApiRequests = 0
-	apiRequestsAry = [0]
-	totalRecords = 0;
-
+var key = false
 
 var opts = {
     logDirectory: __dirname + '/log',
@@ -26,7 +21,6 @@ log.info('[update_bib] Starting up script')
 
 //check to makesure we are inside our range of operation
 var runWindow = config['API']['runWindow']
-var key
 var repeatedId = ""
 var repeatedIdCount = 0
 
@@ -35,6 +29,7 @@ var exit = function(){
 	setTimeout(function(){process.exit()},2000)
 }
 
+//se if the current hour is in our defined run window
 var checkTime = function(){
 	var date = new Date();
 	var currentHour = date.getHours();
@@ -49,49 +44,34 @@ var checkTime = function(){
 
 
 //see if this process is running already
-var child;
+//doing this from cron on the server so 1 = the PS, 2 = the shell script running the cron job, 3 = the node job
 
-child = exec("ps aux",
+var child = exec("ps aux",
    function (error, stdout, stderr) {
       if (stdout.split('update_bib_new.js').length > 3){
-
       	console.log("Already running ",stdout.split('update_bib_new.js').length)
 		log.info('[update_bib] Already running instance count: ', stdout.split('update_bib_new.js').length )
-
-
       	console.log("Already running")
       	process.exit()
       }
 });
-
-
-
-
-
-
-
 
 if (checkTime()){
 
 
 	db.getMetadata(function(err,metadata){
 
-
 		if (err){
 			log.info('[update_bib] error retriving metadata: ',err)
 			exit()
 		}else{
+
 			metadata = metadata[0]
 			log.info('[update_bib] metadata response: ',metadata)
 
 			log.info('[update_bib] Starting API connection')
 
 			var startingMoment = moment(metadata.bibLastUpdatedDate,"YYYY-MM-DD")
-
-			console.log("-----------------")
-			console.log(metadata)
-			console.log("-----------------")
-
 
 			api.init()
 
@@ -131,7 +111,7 @@ if (checkTime()){
 
 
 
-						// //find the last id to send back to the server + 1
+						// move the offset ahead based on how many we got back
 						offset = offset + (data['entries'].length)
 
 						api.saveData(data,"bib");
@@ -142,15 +122,20 @@ if (checkTime()){
 						})
 
 
-
+						//the 50 is hardcoded, optimal number of records to get back
+						//if it is less than 50 then we are done with this day and we should move on
 						if (data['entries'].length < 50){
 							console.log("Looks like it is complete!")
-							log.info('[update_bib] Looks like it is complete!', data['entries'].length)
+							log.info('[update_bib] Looks like it is complete!', data['entries'].length, " ", metadata.bibLastUpdatedDate)
 
 
 
-							//if the current date is = to the date we are working on then don't ++ the date
-							if (metadata.bibLastUpdatedDate == moment().format("YYYY-MM-DD")){
+							var testDate = moment(metadata.bibLastUpdatedDate,"YYYY-MM-DD")
+							testDate.add(1, 'days')
+
+
+							//if the date we are about to increment to is beyond today, stop.
+							if (testDate.isAfter(moment().format("YYYY-MM-DD"))){
 
 								log.info('[update_bib] Looks like we are up to date: ', metadata.bibLastUpdatedDate)
 								exit()
@@ -181,10 +166,6 @@ if (checkTime()){
 						
 							//make sure it is not past bed time
 							if (checkTime()){
-
-								var lastTime = data['entries'][data['entries'].length-1]['updatedDate']
-
-								console.log(repeatedId, "~~", data['entries'][data['entries'].length-1]['id'])
 
 								if (repeatedId!= data['entries'][data['entries'].length-1]['id'] ){
 									repeatedId = data['entries'][data['entries'].length-1]['id']

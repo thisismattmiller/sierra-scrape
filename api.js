@@ -70,11 +70,12 @@ exports.downloadRecent = function(timeStart,timeEnd,token,type,field,offset,cb){
       if(response.statusCode == 200){
       	//parse and send to the callback funtion
         var data = JSON.parse(body)
+        data.url = url
         cb(data);
 
       }else if (response.statusCode == 404){
 
-      	cb({"entries": [],"start": 0,"total": 0});
+      	cb({"entries": [],"start": 0,"total": 0, "url": url});
       
       } else {
 
@@ -126,8 +127,11 @@ exports.downloadData = function(id,token,type,cb){
       	//parse and send to the callback funtion
         var data = JSON.parse(body)
 
+
+
         data.url = url
-        
+
+
         cb(data);
       } else {
         console.log('error: '+ response.statusCode)

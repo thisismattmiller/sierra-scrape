@@ -7,11 +7,7 @@ var moment = require('moment')
 var exec = require('child_process').exec
 
 
-var key = false,
-	apiRequests = 0,
-	totalApiRequests = 0
-	apiRequestsAry = [0]
-	totalRecords = 0;
+var key = false
 
 
 var opts = {
@@ -25,9 +21,7 @@ var log = require('simple-node-logger').createRollingFileLogger( opts );
 log.info('[update_item] Starting up script')
 
 //check to makesure we are inside our range of operation
-var timeStart = config['API']['timeStart']
-var timeEnd = config['API']['timeEnd']
-var key
+var runWindow = config['API']['runWindow']
 var repeatedId = ""
 var repeatedIdCount = 0
 
@@ -36,37 +30,33 @@ var exit = function(){
 	setTimeout(function(){process.exit()},2000)
 }
 
+//se if the current hour is in our defined run window
 var checkTime = function(){
 	var date = new Date();
-	var current_hour = date.getHours();
+	var currentHour = date.getHours();
 
-	if (current_hour >= timeStart && current_hour <= timeEnd ){
-		return true
-	}else{
+	if (runWindow.indexOf(parseInt(currentHour)) == -1 ){
 		return false
+	}else{
+		return true
 	}
 
 }
 
 
-//see if this process is running already
-var child;
 
-child = exec("ps aux",
+//see if this process is running already
+var child = exec("ps aux",
    function (error, stdout, stderr) {
       if (stdout.split('update_item_new.js').length > 3){
 
       	console.log("Already running ",stdout.split('update_item_new.js').length)
 		log.info('[update_item] Already running instance count: ', stdout.split('update_item_new.js').length )
 
-
       	console.log("Already running")
       	process.exit()
       }
 });
-
-
-
 
 
 
@@ -127,7 +117,7 @@ if (checkTime()){
 							totalRecords = data.total
 							console.log("totalRecords:",totalRecords)
 						}
-
+						
 						if (data.url){
 
 							log.info('[update_item] ', data.url)
@@ -153,9 +143,12 @@ if (checkTime()){
 							log.info('[update_item] Looks like it is complete!', data['entries'].length)
 
 
+							var testDate = moment(metadata.bibLastUpdatedDate,"YYYY-MM-DD")
+							testDate.add(1, 'days')
 
-							//if the current date is = to the date we are working on then don't ++ the date
-							if (metadata.itemLastUpdatedDate == moment().format("YYYY-MM-DD")){
+
+							//if the date we are about to increment to is beyond today, stop.
+							if (testDate.isAfter(moment().format("YYYY-MM-DD"))){
 
 								log.info('[update_item] Looks like we are up to date: ', metadata.itemLastUpdatedDate)
 								exit()
@@ -187,9 +180,6 @@ if (checkTime()){
 							//make sure it is not past bed time
 							if (checkTime()){
 
-								var lastTime = data['entries'][data['entries'].length-1]['createdDate']
-
-								console.log(repeatedId, "~~", data['entries'][data['entries'].length-1]['id'])
 
 								if (repeatedId!= data['entries'][data['entries'].length-1]['id'] ){
 									repeatedId = data['entries'][data['entries'].length-1]['id']
@@ -241,7 +231,8 @@ if (checkTime()){
 
 }else{
 
-	log.info('[update_item] Not in run window: between', timeStart, " and ", timeEnd )
+	log.info('[update_bib] Not in run window: ', runWindow )
+	exit()
 
 
 }
